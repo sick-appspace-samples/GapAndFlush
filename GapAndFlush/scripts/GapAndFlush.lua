@@ -70,6 +70,14 @@ gDecoF:setGraphColor(200,0,200)
 ------------------------------------------------------------------------
 -- Functions
 ------------------------------------------------------------------------
+---@param profile Profile
+---@param nS int
+---@param dir int
+---@param targetRadius float
+---@param outlierMargin float
+---@return Shape
+---@return float
+---@return float
 local function fitCircle(profile, nS, dir, targetRadius, outlierMargin)
   local circle
   local cQuality
@@ -92,7 +100,7 @@ local function fitCircle(profile, nS, dir, targetRadius, outlierMargin)
     profCirc = profile:crop(firstValid-1 - nS + 1, firstValid-1)
   end
 
-  local sf = Point.ShapeFitter.create()
+  local sf = Image.ShapeFitter.create()
   sf:setIterations(1000)
   sf:setOutlierMargin(outlierMargin, "ABSOLUTE")
   circle, cQuality = sf:fitCircle(profCirc:toPoints(), targetRadius, targetRadius)
