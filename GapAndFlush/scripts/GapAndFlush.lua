@@ -21,7 +21,7 @@ local circleTargetRadius = 1.0
 local inlierMargin = 0.10*circleTargetRadius
 
 -- Load data
-local cont = Image.readIconData('resources/0') --("C:\\Images\\ProfileImages\\0") 
+local cont = Image.readIconData('resources/0') --("C:\\Images\\ProfileImages\\0")
 local range = cont:getObject('Ranger3Range.Range')
 range = Image.crop(range, 0, 0, 2560, 950)
 
@@ -70,6 +70,14 @@ gDecoF:setGraphColor(200,0,200)
 ------------------------------------------------------------------------
 -- Functions
 ------------------------------------------------------------------------
+---@param profile Profile
+---@param nS int
+---@param dir int
+---@param targetRadius float
+---@param outlierMargin float
+---@return Shape
+---@return float
+---@return float
 local function fitCircle(profile, nS, dir, targetRadius, outlierMargin)
   local circle
   local cQuality
@@ -92,7 +100,7 @@ local function fitCircle(profile, nS, dir, targetRadius, outlierMargin)
     profCirc = profile:crop(firstValid-1 - nS + 1, firstValid-1)
   end
 
-  local sf = Point.ShapeFitter.create()
+  local sf = Image.ShapeFitter.create()
   sf:setIterations(1000)
   sf:setOutlierMargin(outlierMargin, "ABSOLUTE")
   circle, cQuality = sf:fitCircle(profCirc:toPoints(), targetRadius, targetRadius)
@@ -144,7 +152,7 @@ local function extractProfiles()
     probeStart = Point.subtract(pSC, Point.multiplyConstant(probeDir, -probeDist))
     probeStop = Point.subtract(pSC, Point.multiplyConstant(probeDir, probeDist))
     probeLine = Shape.createLineSegment(probeStart, probeStop)
-    
+
     local pTemp = Image.extractProfile(range, probeLine, 2*probeDist*samplesPerMM)
     pTemp:addConstantInplace(-(offsetA + k*stepLength*slopeA))
     profiles[#profiles + 1] = pTemp
@@ -193,7 +201,7 @@ for k = (1+aggDist), (#profiles - aggDist) do
   if circleL ~= nil and circleR ~= nil then
     local pLeftC, radiusL = Shape.getCircleParameters(circleL)
     local pRightC, radiusR = Shape.getCircleParameters(circleR)
-    
+
     leftX = pLeftC:getX() + radiusL
     rightX = pRightC:getX() - radiusR
     gap = rightX - leftX
@@ -202,10 +210,10 @@ for k = (1+aggDist), (#profiles - aggDist) do
 
   gapValues[k] = gap
 
-  -- Calculate flush midway between the edges 
+  -- Calculate flush midway between the edges
   local polyParamR = Profile.Curve.getPolynomialParameters(polyR)
   local cHeightR = polyParamR[1] + polyParamR[2]*midwayPoint
-  
+
   local polyParamL = Profile.Curve.getPolynomialParameters(polyL)
   local cHeightL = polyParamL[1] + polyParamL[2]*midwayPoint
   local flush = cHeightL - cHeightR

@@ -4,7 +4,7 @@
         <crown name="GapAndFlush">
             <desc>user script</desc>
         </crown>
-        <meta key="author">Anders Moe</meta>
+        <meta key="author">AppSpace Sample</meta>
         <meta key="version">1.0</meta>
         <meta key="priority">low</meta>
         <meta key="copy-protected">false</meta>
